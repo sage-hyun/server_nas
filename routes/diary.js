@@ -45,11 +45,14 @@ router.get('/:username', async(req, res, next) =>{
 
 router.post('/', function(req, res) { 
     try {
-        var post = req.body;  // json
-        console.log(post);
+        var body = req.body;  // json
+        // console.log(body);
 
-        models.diary.create(post);
-        res.send('{"code": 1, "msg": "success"}');
+        models.diary.create(body).then(result => {
+            console.log("diary " +result.get("diary_id") + " is created!");
+        });
+
+        res.send('{"code": 1, "msg": "post success"}');
     }
     catch(error) {
         console.error(error);
@@ -58,23 +61,46 @@ router.post('/', function(req, res) {
 });
    
 router.put('/:diaryId', function(req, res) {
-    var post = req.body;
+    try{
+        const diaryId = req.params.diaryId;
+        var body = req.body;
 
-    models.diary.create({
-        writer: post.writer,
-        description: post.description,
-        emotion: post.emotion
-    });
+        models.diary.findOne({
+            where:{
+                diary_id: diaryId
+            }
+        }).then(result => {
+            if(result) {
+                result.update(body).then(_ => {
+                    console.log("diary " + diaryId + " is updated!");
+                });
+            }
+            res.send('{"code": 1, "msg": "update success"}');
+        });
+    }
+    catch(error) {
+        console.error(error);
+        next(error);
+    }
 });
 
 router.delete('/:diaryId', function(req, res) { 
-    var post = req.body;
+    try{
+        const diaryId = req.params.diaryId;
 
-    models.diary.create({
-        writer: post.writer,
-        description: post.description,
-        emotion: post.emotion
-    });
+        models.diary.destroy({
+            where:{
+                diary_id: diaryId
+            }
+        }).then(_ => {
+            console.log("diary " + diaryId + " is deleted!");
+            res.send('{"code": 1, "msg": "delete success"}');
+        });
+    }
+    catch(error) {
+        console.error(error);
+        next(error);
+    }
 });
 
 module.exports = router;
