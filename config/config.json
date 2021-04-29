@@ -5,7 +5,13 @@
     "database": "knotdb",
     "host": "127.0.0.1",
     "port": "3306",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+09:00",
+    "dialectOptions": {
+        "charset": "utf8mb4",
+        "dateStrings": true,
+        "typeCast": true
+    }
   },
   "test": {
     "username": "root",
@@ -20,6 +26,12 @@
     "database": "knotdb",
     "host": "127.0.0.1",
     "port": "3306",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+09:00",
+    "dialectOptions": {
+        "charset": "utf8mb4",
+        "dateStrings": true,
+        "typeCast": true
+    }
   }
 }
