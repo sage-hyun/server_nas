@@ -1,42 +1,80 @@
 var express = require('express');
-const app = require('../app');
-const models = require("./models");
+const models = require("../models");
+const { Op } = require('sequelize');
 
 
 var router = express.Router();
+   
+router.get('/:username', async(req, res, next) =>{
+    try {
+        const username = req.params.username;
+        const selectedDate = req.query.date;
+        
+        if (!selectedDate) {
+            var startDay = new Date(); // today
+        }
+        else {
+            var startDay = new Date(Date.parse(selectedDate));
+        }
+        startDay.setHours(0,0,0,0);
 
-/* GET diary listing. */
-app.get('/', function(req, res) { 
-    return res.send('/');
+        function addDays(date, days) {
+            const copy = new Date(Number(date));
+            copy.setDate(date.getDate() + days);
+            return copy;
+        }
+        
+        const data = await models.diary.findAll({
+            where: {
+                writer: username,
+                createdAt: {
+                    [Op.gte]: startDay,
+                    [Op.lt]: addDays(startDay, 1)
+                }
+            },
+            raw: true
+        });
+        res.send(JSON.stringify(data)); //주의: data는 Array
+    }
+    catch(error) {
+      console.error(error);
+      next(error);
+    }
+});
+
+
+router.post('/', function(req, res) { 
+    try {
+        var post = req.body;  // json
+        console.log(post);
+
+        models.diary.create(post);
+        res.send('{"code": 1, "msg": "success"}');
+    }
+    catch(error) {
+        console.error(error);
+        next(error);
+    }
 });
    
-app.get('/:familyId', function(req, res) {
-    var family_id = req.params.familyId;
-
-    var data = models.diary.findAll({
-        where: {
-            family_id: family_id
-        }});
-    
-    return res.send(JSON.stringify(data));
-});
-
-
-app.post('/create', function(req, res) { 
+router.put('/:diaryId', function(req, res) {
     var post = req.body;
 
     models.diary.create({
         writer: post.writer,
         description: post.description,
-        emotion: post.emotion,
-        create_time: post.create_time
+        emotion: post.emotion
     });
 });
-   
-app.listen(3000, function() {
-    console.log('Example app listening on port 3000!')
+
+router.delete('/:diaryId', function(req, res) { 
+    var post = req.body;
+
+    models.diary.create({
+        writer: post.writer,
+        description: post.description,
+        emotion: post.emotion
+    });
 });
-
-
 
 module.exports = router;
