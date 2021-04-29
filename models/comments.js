@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'diary',
-        key: 'dairy_id'
+        key: 'diary_id'
       }
     },
     username: {

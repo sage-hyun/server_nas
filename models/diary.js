@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('diary', {
-    dairy_id: {
+    diary_id: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
       allowNull: false,
       primaryKey: true
     },
@@ -29,22 +30,18 @@ module.exports = function(sequelize, DataTypes) {
         model: 'emotions',
         key: 'emotion'
       }
-    },
-    create_time: {
-      type: DataTypes.DATE,
-      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'diary',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "dairy_id" },
+          { name: "diary_id" },
         ]
       },
       {
