@@ -7,6 +7,7 @@ var path = require('path');
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var diaryRouter = require('./routes/diary');
+var commentsRouter = require('./routes/comments');
 var https = require('https');
 var fs = require('fs');
 
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 app.use('/diary', diaryRouter);
+app.use('/comments', commentsRouter);
 
 
 // https.createServer({
