@@ -9,6 +9,9 @@ router.get('/:username', async(req, res, next) =>{
     try {
         const username = req.params.username;
         const selectedDate = req.query.date;
+
+        const user = await models.user.findOne({where:{username:username}});
+        const family_id = user.family_id;
         
         if (!selectedDate) {
             var startDay = new Date(); // today
@@ -24,14 +27,20 @@ router.get('/:username', async(req, res, next) =>{
             return copy;
         }
         
+        
         const data = await models.diary.findAll({
+            include:[{
+                model: models.user,
+                where: {family_id: family_id},
+                attributes: ['nickname']
+              }],
             where: {
-                writer: username,
                 createdAt: {
                     [Op.gte]: startDay,
                     [Op.lt]: addDays(startDay, 1)
                 }
             },
+            attributes: ["diary_id","description","emotion","createdAt"],
             raw: true
         });
         res.send(JSON.stringify(data)); //주의: data는 Array
@@ -46,7 +55,7 @@ router.get('/:username', async(req, res, next) =>{
 router.post('/', function(req, res) { 
     try {
         var body = req.body;  // json
-        // console.log(body);
+        console.log(body);
 
         models.diary.create(body).then(result => {
             console.log("diary " +result.get("diary_id") + " is created!");

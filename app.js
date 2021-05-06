@@ -7,6 +7,8 @@ var path = require('path');
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var diaryRouter = require('./routes/diary');
+var https = require('https');
+var fs = require('fs');
 
 var app = express();
 
@@ -19,6 +21,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 app.use('/diary', diaryRouter);
+
+
+// https.createServer({
+//   cert: fs.readFileSync(),
+//   key:fs.readFileSync(),
+//   ca: [fs.readFileSync(), fs.readFileSync()]
+// },app).listen(3000, function() {
+//   console.log('Example app listening on port 3000!')
+// });
 
 app.listen(3000, function() {
   console.log('Example app listening on port 3000!')

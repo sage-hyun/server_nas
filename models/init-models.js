@@ -32,8 +32,10 @@ function initModels(sequelize) {
   rewards.hasMany(votes, { as: "votes", foreignKey: "reward_id"});
   comments.belongsTo(user, { as: "username_user", foreignKey: "username"});
   user.hasMany(comments, { as: "comments", foreignKey: "username"});
-  diary.belongsTo(user, { as: "writer_user", foreignKey: "writer"});
+
+  diary.belongsTo(user, {  foreignKey: "writer"}); //as: "writer_user",
   user.hasMany(diary, { as: "diaries", foreignKey: "writer"});
+
   rewards.belongsTo(user, { as: "writer_user", foreignKey: "writer"});
   user.hasMany(rewards, { as: "rewards", foreignKey: "writer"});
   votes.belongsTo(user, { as: "username_user", foreignKey: "username"});
