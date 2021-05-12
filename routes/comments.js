@@ -32,8 +32,11 @@ router.get('/:diaryId', async(req, res, next) =>{
 router.post('/:diaryId', function(req, res) { 
     try {
         var body = req.body;  // json
-        console.log(body);
+        // console.log(body);
 
+        const diaryId = req.params.diaryId;
+        body.diary_id = diaryId;
+        
         models.comments.create(body).then(result => {
             console.log("comment " +result.get("comments_id") + " is created!");
         });
