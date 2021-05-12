@@ -3,6 +3,7 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('comments', {
     comments_id: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
       allowNull: false,
       primaryKey: true
     },
@@ -29,7 +30,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'comments',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
