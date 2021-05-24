@@ -15,12 +15,12 @@ module.exports = function(sequelize, DataTypes) {
         key: 'diary_id'
       }
     },
-    username: {
-      type: DataTypes.STRING(16),
+    writer: {
+      type: DataTypes.STRING(45),
       allowNull: false,
       references: {
         model: 'user',
-        key: 'username'
+        key: 'email'
       }
     },
     content: {
@@ -51,7 +51,7 @@ module.exports = function(sequelize, DataTypes) {
         name: "fk_comments_user1_idx",
         using: "BTREE",
         fields: [
-          { name: "username" },
+          { name: "writer" },
         ]
       },
     ]

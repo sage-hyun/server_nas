@@ -3,11 +3,12 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('family', {
     family_id: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
       allowNull: false,
       primaryKey: true
     },
-    reward_status: {
-      type: DataTypes.TINYINT,
+    family_name: {
+      type: DataTypes.STRING(45),
       allowNull: true
     }
   }, {

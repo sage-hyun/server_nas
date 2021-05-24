@@ -8,11 +8,11 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     writer: {
-      type: DataTypes.STRING(16),
+      type: DataTypes.STRING(45),
       allowNull: false,
       references: {
         model: 'user',
-        key: 'username'
+        key: 'email'
       }
     },
     img_link: {

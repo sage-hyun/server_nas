@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('user', {
-    username: {
-      type: DataTypes.STRING(16),
+    email: {
+      type: DataTypes.STRING(45),
       allowNull: false,
       primaryKey: true
     },
     password: {
-      type: DataTypes.STRING(16),
+      type: DataTypes.STRING(45),
       allowNull: false
     },
     nickname: {
@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     family_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'family',
         key: 'family_id'
@@ -24,6 +24,10 @@ module.exports = function(sequelize, DataTypes) {
     },
     birth: {
       type: DataTypes.DATEONLY,
+      allowNull: true
+    },
+    profile_img: {
+      type: DataTypes.STRING(45),
       allowNull: true
     }
   }, {
@@ -36,7 +40,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "username" },
+          { name: "email" },
         ]
       },
       {
