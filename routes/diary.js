@@ -1,16 +1,17 @@
 var express = require('express');
 const models = require("../models");
 const { Op } = require('sequelize');
+const verifyToken = require("./middlewares/auth").verifyToken;
 
 
 var router = express.Router();
    
-router.get('/:username', async(req, res, next) =>{
+router.get('/', verifyToken, async(req, res) =>{
     try {
-        const username = req.params.username;
+        const email = req.email;
         const selectedDate = req.query.date;
 
-        const user = await models.user.findOne({where:{username:username}});
+        const user = await models.user.findByPk(email);
         const family_id = user.family_id;
         
         if (!selectedDate) {
@@ -52,16 +53,17 @@ router.get('/:username', async(req, res, next) =>{
 });
 
 
-router.post('/', function(req, res) { 
+router.post('/', verifyToken, async(req, res) => { 
     try {
         var body = req.body;  // json
-        console.log(body);
+        
+        body.writer = req.email;
 
-        models.diary.create(body).then(result => {
+        await models.diary.create(body).then(result => {
             console.log("diary " +result.get("diary_id") + " is created!");
         });
 
-        res.send('{"code": 1, "msg": "post success"}');
+        res.send("post success");
     }
     catch(error) {
         console.error(error);
@@ -69,23 +71,25 @@ router.post('/', function(req, res) {
     }
 });
    
-router.put('/:diaryId', function(req, res) {
+router.put('/:diaryId', verifyToken, async(req, res) => {
     try{
         const diaryId = req.params.diaryId;
+        const email = req.email;
         var body = req.body;
 
-        models.diary.findOne({
-            where:{
-                diary_id: diaryId
-            }
-        }).then(result => {
-            if(result) {
-                result.update(body).then(_ => {
-                    console.log("diary " + diaryId + " is updated!");
-                });
-            }
-            res.send('{"code": 1, "msg": "update success"}');
-        });
+        const diary = await models.diary.findByPk(diaryId);
+
+        if(!diary) {
+            res.status(404).json({ error: "update failed. not found" });
+        }
+        else if(diary.get("writer") != email) {
+            res.status(401).json({ error: "update failed. unauthorized" });
+        }
+        else {
+            await diary.update(body);
+            console.log("diary " + diaryId + " is updated!");
+            res.send("update success");
+        }
     }
     catch(error) {
         console.error(error);
@@ -93,18 +97,24 @@ router.put('/:diaryId', function(req, res) {
     }
 });
 
-router.delete('/:diaryId', function(req, res) { 
+router.delete('/:diaryId', verifyToken, async(req, res) => { 
     try{
         const diaryId = req.params.diaryId;
+        const email = req.email;
 
-        models.diary.destroy({
-            where:{
-                diary_id: diaryId
-            }
-        }).then(_ => {
+        const diary = await models.diary.findByPk(diaryId);
+
+        if(!diary) {
+            res.status(404).json({ error: "delete failed. not found" });
+        }
+        else if(diary.get("writer") != email) {
+            res.status(401).json({ error: "delete failed. unauthorized" });
+        }
+        else {
+            await diary.destroy();
             console.log("diary " + diaryId + " is deleted!");
-            res.send('{"code": 1, "msg": "delete success"}');
-        });
+            res.send("delete success");
+        }
     }
     catch(error) {
         console.error(error);

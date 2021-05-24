@@ -1,13 +1,22 @@
 var express = require('express');
 const models = require("../models");
-const { Op } = require('sequelize');
+const verifyToken = require("./middlewares/auth").verifyToken;
+
 
 
 var router = express.Router();
    
-router.get('/:diaryId', async(req, res, next) =>{
+router.get('/:diaryId', verifyToken, async(req, res, next) =>{
     try {
+        console.log(req.app);
         const diaryId = req.params.diaryId;
+
+        const diary = await models.diary.findByPk(diaryId);
+        const user = await models.user.findByPk(diary.get("writer"));
+        
+        if(user.get("family_id") != req.familyId){
+            res.status(401).json({ error: "get failed. unauthorized" });
+        }
         
         const data = await models.comments.findAll({
             include:[{
@@ -29,19 +38,29 @@ router.get('/:diaryId', async(req, res, next) =>{
 });
 
 
-router.post('/:diaryId', function(req, res) { 
+router.post('/:diaryId', verifyToken, async(req, res) => { 
     try {
-        var body = req.body;  // json
-        // console.log(body);
-
         const diaryId = req.params.diaryId;
-        body.diary_id = diaryId;
-        
-        models.comments.create(body).then(result => {
-            console.log("comment " +result.get("comments_id") + " is created!");
-        });
 
-        res.send('{"code": 1, "msg": "comment post success"}');
+        var body = req.body;  // json
+        
+        body.diary_id = diaryId;
+        body.writer = req.email;
+
+        const diary = await models.diary.findByPk(diaryId);
+        const user = await models.user.findByPk(diary.get("writer"));
+
+        if(user.get("family_id") != req.familyId){
+            res.status(401).json({ error: "post failed. unauthorized" });
+        }
+        else {
+            await models.diary.create(body).then(result => {
+                console.log("comment " +result.get("comments_id") + " is created!");
+            });
+    
+            res.send("comment post success");
+        }
+
     }
     catch(error) {
         console.error(error);
@@ -49,25 +68,25 @@ router.post('/:diaryId', function(req, res) {
     }
 });
    
-router.put('/:commentsId', function(req, res) {
+router.put('/:commentsId', verifyToken, async(req, res) => {
     try{
         const commentsId = req.params.commentsId;
+        const email = req.email;
         var body = req.body;
 
-        models.diary.findOne({
-            where:{
-                comments_id: commentsId
-            }
-        }).then(result => {
-            if(result) {
-                result.update(body).then(_ => {
-                    console.log("comment " + commentsId + " is updated!");
-                    res.send('{"code": 1, "msg": "comment update success"}');
-                });
-            } else {
-                res.send('{"code": -1, "msg": "comment update failed. not found."}');
-            }
-        });
+        const comments = await models.comments.findByPk(commentsId);
+
+        if(!comments) {
+            res.status(404).json({ error: "update failed. not found" });
+        }
+        else if(comments.get("writer") != email) {
+            res.status(401).json({ error: "update failed. unauthorized" });
+        }
+        else {
+            await comments.update(body);
+            console.log("comments " + commentsId + " is updated!");
+            res.send("update success");
+        }
     }
     catch(error) {
         console.error(error);
@@ -75,18 +94,24 @@ router.put('/:commentsId', function(req, res) {
     }
 });
 
-router.delete('/:commentsId', function(req, res) { 
+router.delete('/:commentsId', verifyToken, async(req, res) => { 
     try{
         const commentsId = req.params.commentsId;
+        const email = req.email;
 
-        models.diary.destroy({
-            where:{
-                comments_id: commentsId
-            }
-        }).then(_ => {
-            console.log("comment " + commentsId + " is deleted!");
-            res.send('{"code": 1, "msg": "comment delete success"}');
-        });
+        const comments = await models.comments.findByPk(commentsId);
+
+        if(!comments) {
+            res.status(404).json({ error: "delete failed. not found" });
+        }
+        else if(comments.get("writer") != email) {
+            res.status(401).json({ error: "delete failed. unauthorized" });
+        }
+        else {
+            await comments.destroy();
+            console.log("comments " + commentsId + " is deleted!");
+            res.send("delete success");
+        }
     }
     catch(error) {
         console.error(error);
