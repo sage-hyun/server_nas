@@ -13,6 +13,11 @@ const development = {
     charset: "utf8mb4",
     dateStrings: true,
     typeCast: true
+  },
+  ssl: {
+    ca: fs.readFileSync(__dirname + '/certs/server-ca.pem'),
+    key: fs.readFileSync(__dirname + '/certs/client-key.pem'),
+    cert: fs.readFileSync(__dirname + '/certs/client-cert.pem')
   }
 };
 
@@ -28,6 +33,11 @@ const production = {
     charset: "utf8mb4",
     dateStrings: true,
     typeCast: true
+  },
+  ssl: {
+    ca: fs.readFileSync(__dirname + '/certs/server-ca.pem'),
+    key: fs.readFileSync(__dirname + '/certs/client-key.pem'),
+    cert: fs.readFileSync(__dirname + '/certs/client-cert.pem')
   }
 };
 
@@ -43,6 +53,11 @@ const test = {
     charset: "utf8mb4",
     dateStrings: true,
     typeCast: true
+  },
+  ssl: {
+    ca: fs.readFileSync(__dirname + '/certs/server-ca.pem'),
+    key: fs.readFileSync(__dirname + '/certs/client-key.pem'),
+    cert: fs.readFileSync(__dirname + '/certs/client-cert.pem')
   }
 };
 
