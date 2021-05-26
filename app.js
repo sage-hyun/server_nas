@@ -4,8 +4,7 @@ var path = require('path');
 // var cookieParser = require('cookie-parser');
 // var logger = require('morgan');
 
-// var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/users');
 var diaryRouter = require('./routes/diary');
 var commentsRouter = require('./routes/comments');
 var https = require('https');
@@ -19,8 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+app.use('/users', usersRouter);
 app.use('/diary', diaryRouter);
 app.use('/comments', commentsRouter);
 
@@ -33,8 +31,8 @@ app.use('/comments', commentsRouter);
 //   console.log('Example app listening on port 3000!')
 // });
 
-app.listen(3000, function() {
-  console.log('Example app listening on port 3000!')
+app.listen(8080, function() {
+  console.log('Example app listening on port 8080!')
 });
 
 
