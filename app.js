@@ -1,3 +1,7 @@
+require('dotenv').config();
+const env = process.env;
+const port = env.NODE_PORT;
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -31,8 +35,8 @@ app.use('/comments', commentsRouter);
 //   console.log('Example app listening on port 3000!')
 // });
 
-app.listen(8080, function() {
-  console.log('Example app listening on port 8080!')
+app.listen(port, function() {
+  console.log(`Example app listening on port ${port}!`)
 });
 
 
