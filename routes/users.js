@@ -22,15 +22,13 @@ router.post('/login', async (req, res) => {
         });
 
         if(!user){
-            res.status(401);
-            res.send({error: 'invalid user'});
+            res.status(401).json({error: 'invalid user'});
         }
         else{
             const familyId = user.get("family_id");
 
             if (familyId == null) {
-                res.status(401);
-                res.send({error: 'not accepted by family member'});
+                res.status(401).json({error: 'not accepted by family member'});
             }
             else {
                 // jwt 토큰 생성
@@ -42,8 +40,7 @@ router.post('/login', async (req, res) => {
                         expiresIn: '7d',
                         subject: 'userInfo'
                 });
-                res.status(200);
-                res.send({result:'login success', token});
+                res.status(200).json({result:'login success', token});
             }
         }
     }
@@ -53,7 +50,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/register', async (req, res) => { 
+router.post('/join', async (req, res) => { 
     try {
         var {email, password, nickname, birth, family_member} = req.body;
         var family_id = null;
@@ -88,7 +85,7 @@ router.post('/register', async (req, res) => {
             console.log("user " + result.get("email") + " is created!");
         });
         res.status(200);
-        res.send('register success');
+        res.send('join success');
 
     }
     catch(error) {

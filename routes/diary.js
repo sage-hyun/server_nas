@@ -41,7 +41,7 @@ router.get('/', verifyToken, async(req, res) =>{
                     [Op.lt]: addDays(startDay, 1)
                 }
             },
-            attributes: ["diary_id","description","emotion","createdAt"],
+            attributes: ["diary_id","description","emotion","createdAt","writer","commentsCount"],
             raw: true
         });
         res.send(JSON.stringify(data)); //주의: data는 Array
@@ -80,13 +80,15 @@ router.put('/:diaryId', verifyToken, async(req, res) => {
         const diary = await models.diary.findByPk(diaryId);
 
         if(!diary) {
-            res.status(404).json({ error: "update failed. not found" });
+            res.status(404).send("update failed. not found");
         }
         else if(diary.get("writer") != email) {
-            res.status(401).json({ error: "update failed. unauthorized" });
+            res.status(401).send("update failed. unauthorized");
         }
         else {
-            await diary.update(body);
+            await models.diary.update(body, {
+                where: {diaryId}
+            });
             console.log("diary " + diaryId + " is updated!");
             res.send("update success");
         }
@@ -105,13 +107,15 @@ router.delete('/:diaryId', verifyToken, async(req, res) => {
         const diary = await models.diary.findByPk(diaryId);
 
         if(!diary) {
-            res.status(404).json({ error: "delete failed. not found" });
+            res.status(404).send("delete failed. not found");
         }
         else if(diary.get("writer") != email) {
-            res.status(401).json({ error: "delete failed. unauthorized" });
+            res.status(401).send("delete failed. unauthorized");
         }
         else {
-            await diary.destroy();
+            await models.diary.destroy({
+                where: {diaryId}
+            });
             console.log("diary " + diaryId + " is deleted!");
             res.send("delete success");
         }

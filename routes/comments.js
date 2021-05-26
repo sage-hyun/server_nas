@@ -15,7 +15,8 @@ router.get('/:diaryId', verifyToken, async(req, res, next) =>{
         const user = await models.user.findByPk(diary.get("writer"));
         
         if(user.get("family_id") != req.familyId){
-            res.status(401).json({ error: "get failed. unauthorized" });
+            res.status(401);
+            return res.end();
         }
         
         const data = await models.comments.findAll({
@@ -29,7 +30,8 @@ router.get('/:diaryId', verifyToken, async(req, res, next) =>{
             attributes: ["comments_id","content","createdAt"],
             raw: true
         });
-        res.send(JSON.stringify(data)); //주의: data는 Array
+
+        return res.send(JSON.stringify(data)); //주의: data는 Array
     }
     catch(error) {
       console.error(error);
@@ -51,16 +53,14 @@ router.post('/:diaryId', verifyToken, async(req, res) => {
         const user = await models.user.findByPk(diary.get("writer"));
 
         if(user.get("family_id") != req.familyId){
-            res.status(401).json({ error: "post failed. unauthorized" });
+            res.status(401).send("comment post failed. unauthorized");
         }
-        else {
+        else{
             await models.diary.create(body).then(result => {
                 console.log("comment " +result.get("comments_id") + " is created!");
             });
-    
             res.send("comment post success");
         }
-
     }
     catch(error) {
         console.error(error);
@@ -77,13 +77,15 @@ router.put('/:commentsId', verifyToken, async(req, res) => {
         const comments = await models.comments.findByPk(commentsId);
 
         if(!comments) {
-            res.status(404).json({ error: "update failed. not found" });
+            res.status(404).send("update failed. not found");
         }
         else if(comments.get("writer") != email) {
-            res.status(401).json({ error: "update failed. unauthorized" });
+            res.status(401).send("update failed. unauthorized");
         }
         else {
-            await comments.update(body);
+            await models.comments.update(body, {
+                where: {commentsId}
+            });
             console.log("comments " + commentsId + " is updated!");
             res.send("update success");
         }
@@ -102,13 +104,15 @@ router.delete('/:commentsId', verifyToken, async(req, res) => {
         const comments = await models.comments.findByPk(commentsId);
 
         if(!comments) {
-            res.status(404).json({ error: "delete failed. not found" });
+            res.status(404).send("delete failed. not found");
         }
         else if(comments.get("writer") != email) {
-            res.status(401).json({ error: "delete failed. unauthorized" });
+            res.status(401).send("delete failed. unauthorized");
         }
         else {
-            await comments.destroy();
+            await models.comments.destroy({
+                where: {commentsId}
+            });
             console.log("comments " + commentsId + " is deleted!");
             res.send("delete success");
         }
