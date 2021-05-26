@@ -30,6 +30,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'emotions',
         key: 'emotion'
       }
+    },
+    commentsCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, {
     sequelize,
