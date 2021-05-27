@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/join', async (req, res) => { 
     try {
-        var {email, password, nickname, birth, family_member} = req.body;
+        var {email, password, nickname, birth, family_code} = req.body;
         var family_id = null;
 
         const user = await models.user.findOne({where:{email:email}});
@@ -61,18 +61,24 @@ router.post('/join', async (req, res) => {
             return res.send('이미 가입된 이메일 주소입니다');
         }
 
-        if (family_member) {
-            const member = await models.user.findOne({where:{email:family_member}});
-            if(!member){
+        if (family_code) {
+            var family = await models.family.findOne({where:{family_code}});
+            if(!family){
                 res.status(400);
-                return res.send('가족의 이메일이 잘못되었습니다');
+                return res.send('가족 코드가 잘못되었습니다');
             }
             else{
-                // member 에게 수락 요청 보내기
+                family_id = family.get("family_id");
             }
         } else{
-            const family = await models.family.create({family_name:null});
-            family_id = family.get("family_id");
+            // 새 가족 코드 생성
+            do {
+                new_family_code = Math.random().toString(36).substr(2,5);
+                var family = await models.family.findOne({where:{family_code:new_family_code}});
+            } while (family)    // 중복 확인
+
+            const new_family = await models.family.create({family_code:new_family_code});
+            family_id = new_family.get("family_id");
         }
                     
         models.user.create({
@@ -85,7 +91,7 @@ router.post('/join', async (req, res) => {
             console.log("user " + result.get("email") + " is created!");
         });
         res.status(200);
-        res.send('join success');
+        res.send('회원가입이 완료되었습니다');
 
     }
     catch(error) {
@@ -94,9 +100,13 @@ router.post('/join', async (req, res) => {
     }
 });
 
-router.get('/requests', verifyToken, function(req, res) { 
+router.get('/familycode', verifyToken, function(req, res) { 
     try {
-        
+        const email = req.email;
+        const user = await models.user.findByPk(email);
+        const family_code = await models.family.findByPk(user.family_id);
+
+        res.send(family_code);
     }
     catch(error) {
         console.error(error);
@@ -104,15 +114,5 @@ router.get('/requests', verifyToken, function(req, res) {
     }
 });
 
-router.post('/accept', verifyToken, function(req, res) { 
-    try {
-        
-    }
-    catch(error) {
-        console.error(error);
-        next(error);
-    }
-});
-   
 
 module.exports = router;
