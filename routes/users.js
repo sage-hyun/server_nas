@@ -100,7 +100,7 @@ router.post('/join', async (req, res) => {
     }
 });
 
-router.get('/familycode', verifyToken, function(req, res) { 
+router.get('/familycode', verifyToken, async (req, res) => { 
     try {
         const email = req.email;
         const user = await models.user.findByPk(email);
