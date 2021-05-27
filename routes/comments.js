@@ -84,7 +84,7 @@ router.put('/:commentsId', verifyToken, async(req, res) => {
         }
         else {
             await models.comments.update(body, {
-                where: {commentsId}
+                where: {comments_id: commentsId}
             });
             console.log("comments " + commentsId + " is updated!");
             res.send("update success");
@@ -111,7 +111,7 @@ router.delete('/:commentsId', verifyToken, async(req, res) => {
         }
         else {
             await models.comments.destroy({
-                where: {commentsId}
+                where: {comments_id: commentsId}
             });
             console.log("comments " + commentsId + " is deleted!");
             res.send("delete success");
