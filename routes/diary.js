@@ -87,7 +87,7 @@ router.put('/:diaryId', verifyToken, async(req, res) => {
         }
         else {
             await models.diary.update(body, {
-                where: {diaryId}
+                where: {diary_id: diaryId}
             });
             console.log("diary " + diaryId + " is updated!");
             res.send("update success");
@@ -114,7 +114,7 @@ router.delete('/:diaryId', verifyToken, async(req, res) => {
         }
         else {
             await models.diary.destroy({
-                where: {diaryId}
+                where: {diary_id: diaryId}
             });
             console.log("diary " + diaryId + " is deleted!");
             res.send("delete success");
