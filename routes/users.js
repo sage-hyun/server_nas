@@ -40,7 +40,14 @@ router.post('/login', async (req, res) => {
                         expiresIn: '7d',
                         subject: 'userInfo'
                 });
-                res.status(200).json({result:'login success', token});
+                const family = await models.family.findByPk(familyId);
+
+                res.status(200).json({
+                    result:'login success', 
+                    token, 
+                    nickname: user.get("nickname"),
+                    family_code: family.get("family_code")
+                });
             }
         }
     }
@@ -104,9 +111,9 @@ router.get('/familycode', verifyToken, async (req, res) => {
     try {
         const email = req.email;
         const user = await models.user.findByPk(email);
-        const family_code = await models.family.findByPk(user.family_id);
+        const family = await models.family.findByPk(user.family_id);
 
-        res.send(family_code);
+        res.send(family.family_code);
     }
     catch(error) {
         console.error(error);
