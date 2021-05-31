@@ -56,7 +56,7 @@ router.post('/:diaryId', verifyToken, async(req, res) => {
             res.status(401).send("comment post failed. unauthorized");
         }
         else{
-            await models.diary.create(body).then(result => {
+            await models.comments.create(body).then(result => {
                 console.log("comment " +result.get("comments_id") + " is created!");
             });
             res.send("comment post success");
