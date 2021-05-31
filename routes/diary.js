@@ -116,6 +116,9 @@ router.delete('/:diaryId', verifyToken, async(req, res) => {
             await models.diary.destroy({
                 where: {diary_id: diaryId}
             });
+            await models.comments.destroy({
+                where: {diary_id: diaryId}
+            });
             console.log("diary " + diaryId + " is deleted!");
             res.send("delete success");
         }
