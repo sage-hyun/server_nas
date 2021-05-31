@@ -59,7 +59,7 @@ router.post('/:diaryId', verifyToken, async(req, res) => {
             await models.comments.create(body).then(result => {
                 console.log("comment " +result.get("comments_id") + " is created!");
             });
-            await models.diary.increment(commentsCount,{by:1,
+            await models.diary.increment("commentsCount",{by:1,
                 where: {diary_id: diaryId}
             });
             res.send("comment post success");
@@ -116,7 +116,7 @@ router.delete('/:commentsId', verifyToken, async(req, res) => {
             await models.comments.destroy({
                 where: {comments_id: commentsId}
             });
-            await models.diary.decrement(commentsCount,{by:1,
+            await models.diary.decrement("commentsCount",{by:1,
                 where: {diary_id: comments.get("diary_id")}
             });
             console.log("comments " + commentsId + " is deleted!");
