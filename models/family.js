@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     family_code: {
-      type: DataTypes.STRING(5),
+      type: DataTypes.STRING(8),
       allowNull: true
     }
   }, {

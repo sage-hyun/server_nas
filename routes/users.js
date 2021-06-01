@@ -80,7 +80,7 @@ router.post('/join', async (req, res) => {
         } else{
             // 새 가족 코드 생성
             do {
-                new_family_code = Math.random().toString(36).substr(2,5);
+                new_family_code = Math.random().toString(36).substr(2,8);
                 var family = await models.family.findOne({where:{family_code:new_family_code}});
             } while (family)    // 중복 확인
 
