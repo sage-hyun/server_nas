@@ -113,10 +113,10 @@ router.delete('/:diaryId', verifyToken, async(req, res) => {
             res.status(401).send("delete failed. unauthorized");
         }
         else {
-            await models.diary.destroy({
+            await models.comments.destroy({
                 where: {diary_id: diaryId}
             });
-            await models.comments.destroy({
+            await models.diary.destroy({
                 where: {diary_id: diaryId}
             });
             console.log("diary " + diaryId + " is deleted!");
