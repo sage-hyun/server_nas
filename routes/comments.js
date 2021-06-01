@@ -27,7 +27,7 @@ router.get('/:diaryId', verifyToken, async(req, res, next) =>{
             where: {
                 diary_id: diaryId
             },
-            attributes: ["comments_id","content","createdAt"],
+            attributes: ["comments_id","content","createdAt","writer"],
             raw: true
         });
 
