@@ -2,18 +2,16 @@ var express = require('express');
 const models = require("../models");
 const { Op } = require('sequelize');
 const verifyToken = require("./middlewares/auth").verifyToken;
+const addDays = require("./middlewares/calc_date").addDays;
 
 
 var router = express.Router();
    
 router.get('/', verifyToken, async(req, res) =>{
     try {
-        const email = req.email;
-        const selectedDate = req.query.date;
+        const family_id = req.familyId;
 
-        const user = await models.user.findByPk(email);
-        const family_id = user.family_id;
-        
+        const selectedDate = req.query.date;
         if (!selectedDate) {
             var startDay = new Date(); // today
         }
@@ -21,12 +19,6 @@ router.get('/', verifyToken, async(req, res) =>{
             var startDay = new Date(Date.parse(selectedDate));
         }
         startDay.setHours(0,0,0,0);
-
-        function addDays(date, days) {
-            const copy = new Date(Number(date));
-            copy.setDate(date.getDate() + days);
-            return copy;
-        }
         
         
         const data = await models.diary.findAll({
@@ -63,6 +55,26 @@ router.post('/', verifyToken, async(req, res) => {
             console.log("diary " +result.get("diary_id") + " is created!");
         });
 
+        // calendar
+        const now = new Date();
+        now.setHours(0,0,0,0);
+
+        const family_member = await models.user.findAll({where:{family_id: req.familyId}});
+        const diary_writer = await models.diary.aggregate('writer', 'DISTINCT', { plain: false, raw:true,
+            where:{
+                createdAt: {
+                [Op.gte]: now,
+                [Op.lt]: addDays(now, 1)
+                } 
+            }
+        });
+
+        await models.calendar.findOrCreate({where:{date:now, family_id: req.familyId}});
+        await models.calendar.update({
+            user_count_total: family_member.length, 
+            user_count_diary: diary_writer.length
+        },{where:{date:now, family_id: req.familyId}}
+        )
         res.send("post success");
     }
     catch(error) {

@@ -3,8 +3,7 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('calendar', {
     date: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
-      primaryKey: true
+      allowNull: false
     },
     family_id: {
       type: DataTypes.INTEGER,
@@ -14,23 +13,26 @@ module.exports = function(sequelize, DataTypes) {
         key: 'family_id'
       }
     },
-    stamp_num: {
+    user_count_total: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
+    },
+    user_count_diary: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    user_count_comments: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,
     tableName: 'calendar',
     timestamps: false,
     indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "date" },
-        ]
-      },
       {
         name: "fk_calendar_familiy1_idx",
         using: "BTREE",

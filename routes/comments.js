@@ -1,7 +1,8 @@
 var express = require('express');
 const models = require("../models");
+const { Op } = require('sequelize');
 const verifyToken = require("./middlewares/auth").verifyToken;
-
+const addDays = require("./middlewares/calc_date").addDays;
 
 
 var router = express.Router();
@@ -62,6 +63,27 @@ router.post('/:diaryId', verifyToken, async(req, res) => {
             await models.diary.increment("commentsCount",{by:1,
                 where: {diary_id: diaryId}
             });
+
+            // calendar
+            const now = new Date();
+            now.setHours(0,0,0,0);
+
+            const family_member = await models.user.findAll({where:{family_id: req.familyId}});
+            const comments_writer = await models.comments.aggregate('writer', 'DISTINCT', { plain: false, raw:true,
+                where:{
+                    createdAt: {
+                    [Op.gte]: now,
+                    [Op.lt]: addDays(now, 1)
+                    } 
+                }
+            });
+
+            await models.calendar.findOrCreate({where:{date:now, family_id: req.familyId}});
+            await models.calendar.update({
+                user_count_total: family_member.length, 
+                user_count_comments: comments_writer.length
+            },{where:{date:now, family_id: req.familyId}}
+            )
             res.send("comment post success");
         }
     }
