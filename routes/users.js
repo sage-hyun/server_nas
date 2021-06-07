@@ -87,13 +87,13 @@ router.post('/join', async (req, res) => {
             const new_family = await models.family.create({family_code:new_family_code});
             family_id = new_family.get("family_id");
         }
-                    
+
         models.user.create({
             email:email,
             password:password,
             nickname:nickname,
             family_id:family_id,
-            birth:birth
+            birth: birth ? birth : null
         }).then(result => {
             console.log("user " + result.get("email") + " is created!");
         });
