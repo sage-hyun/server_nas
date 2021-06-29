@@ -3,7 +3,7 @@
 가족이 함께쓰는 감정일기 어플리케이션인 Knotknot의 서버 프로그램입니다.
 
 ## API Reference
-* routes/user.js
+* routes/users.js
     * [로그인](#로그인)  
     * [회원가입](#회원가입)  
     * [가족 코드 조회하기](#가족-코드-조회하기)  
