@@ -123,13 +123,13 @@
 | Field Name | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `diaries` | `object[]` | 일기 리스트 |
-| `ㄴdiary_id` | `int` | 일기 고유번호 |
-| `ㄴdescription` | `string` | 일기 내용 |
-| `ㄴemotion` | `int` | 감정티콘 번호 |
-| `ㄴcreatedAt` | `string` | 작성 시간 |
-| `ㄴwriter` | `string` | 작성자 email |
-| `ㄴcommentsCount` | `int` | 일기의 코멘트 수 |
-| `ㄴuser.nickname` | `string` | 작성자 닉네임 |
+| ㄴ`diary_id` | `int` | 일기 고유번호 |
+| ㄴ`description` | `string` | 일기 내용 |
+| ㄴ`emotion` | `int` | 감정티콘 번호 |
+| ㄴ`createdAt` | `string` | 작성 시간 |
+| ㄴ`writer` | `string` | 작성자 email |
+| ㄴ`commentsCount` | `int` | 일기의 코멘트 수 |
+| ㄴ`user.nickname` | `string` | 작성자 닉네임 |
 
 ---
 ### 일기 작성하기
@@ -232,11 +232,11 @@
 | Field Name | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `comments` | `object[]` | 코멘트 리스트 |
-| `ㄴcomments_id` | `int` | 코멘트 고유번호 |
-| `ㄴcontent` | `string` | 코멘트 내용 |
-| `ㄴcreatedAt` | `string` | 작성 시간 |
-| `ㄴwriter` | `string` | 작성자 email |
-| `ㄴuser.nickname` | `string` | 작성자 닉네임 |
+| ㄴ`comments_id` | `int` | 코멘트 고유번호 |
+| ㄴ`content` | `string` | 코멘트 내용 |
+| ㄴ`createdAt` | `string` | 작성 시간 |
+| ㄴ`writer` | `string` | 작성자 email |
+| ㄴ`user.nickname` | `string` | 작성자 닉네임 |
 
 * Response (Failure):
 ```
@@ -352,7 +352,7 @@
 | Field Name | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `calendar` | `object[]` | 캘린더 정보 리스트 |
-| `ㄴdate` | `string` | 날짜 (YYYY-MM-dd) |
-| `ㄴuser_count_total` | `int` | 당일 가족구성원의 수 |
-| `ㄴuser_count_diary` | `int` | 당일 일기를 작성한 가족구성원의 수 |
-| `ㄴuser_count_comments` | `int` | 당일 코멘트를 작성한 가족구성원의 수 |
+| ㄴ`date` | `string` | 날짜 (YYYY-MM-dd) |
+| ㄴ`user_count_total` | `int` | 당일 가족구성원의 수 |
+| ㄴ`user_count_diary` | `int` | 당일 일기를 작성한 가족구성원의 수 |
+| ㄴ`user_count_comments` | `int` | 당일 코멘트를 작성한 가족구성원의 수 |
