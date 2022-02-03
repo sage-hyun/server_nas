@@ -22,6 +22,26 @@ const development = {
   }
 };
 
+const development_mariadb = {
+  username: env.MARIADB_USERNAME,
+  password: env.MARIADB_PASSWORD,
+  database: env.MARIADB_DATABASE,
+  host: env.MARIADB_HOST,
+  port: env.MARIADB_PORT,
+  dialect: "mariadb",
+  timezone: "+09:00",
+  dialectOptions: {
+    charset: "utf8mb4",
+    dateStrings: true,
+    typeCast: true
+  },
+  ssl: {
+    ca: fs.readFileSync(__dirname + '/certs/server-ca.pem'),
+    key: fs.readFileSync(__dirname + '/certs/client-key.pem'),
+    cert: fs.readFileSync(__dirname + '/certs/client-cert.pem')
+  }
+};
+
 const production = {
   username: env.MYSQL_USERNAME,
   password: env.MYSQL_PASSWORD,
@@ -62,4 +82,4 @@ const test = {
   }
 };
 
-module.exports = { development, production, test };
+module.exports = { development, development_mariadb, production, test };
