@@ -19,6 +19,7 @@ router.get('/', verifyToken, async(req, res) =>{
             var startDay = new Date(Date.parse(selectedDate));
         }
         startDay.setHours(0,0,0,0);
+        // startDay.setHours(startDay.getHours()-9);   // compute engine 리눅스 서버에서..
         
         
         const data = await models.diary.findAll({
